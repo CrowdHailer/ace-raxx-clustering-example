@@ -1,8 +1,11 @@
 defmodule AceRaxxClusterExample do
   defmodule Router do
+    require EEx
+    EEx.function_from_file :def, :home_page, "lib/ace_raxx_cluster_example/home_page.html.eex", [:nodes]
+
     def handle_request(_, _) do
-      body = "Hello, World!"
-      Raxx.Response.ok(body)
+      {:ok, nodes} = AceRaxxClusterExample.Tracker.current
+      Raxx.Response.ok(home_page(nodes))
     end
   end
 
@@ -27,11 +30,19 @@ defmodule AceRaxxClusterExample do
       GenServer.call(__MODULE__, {:hello, other})
     end
 
+    def current() do
+      GenServer.call(__MODULE__, :current)
+    end
+
     def handle_call({:hello, other}, _from, nodes) do
       :erlang.monitor_node(other, true)
       nodes = MapSet.put(nodes, other)
       GenEvent.notify(AceRaxxClusterExample.Broadcast, {:nodes, nodes})
       {:reply, :ok, nodes}
+    end
+
+    def handle_call(:current, _from, nodes) do
+      {:reply, {:ok, MapSet.put(nodes, node())}, nodes}
     end
 
     def handle_info({:nodedown, other}, nodes) do

@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Ace Raxx cluster example</title>
+  </head>
+  <body>
+    <h1>Ace Raxx cluster example</h1>
+    <ul id="node-list">
+      <%= for node <- nodes do %>
+        <li>
+          <%= node %>
+        </li>
+      <% end %>
+    </ul>
+  </body>
+</html>
