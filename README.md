@@ -1,24 +1,39 @@
 # AceRaxxClusterExample
 
-**TODO: Add description**
+**An example of how to setup a multi node web service in elixir**
 
-## Installation
+This example is built upon by tcp server [Ace](https://github.com/CrowdHailer/Ace) and by server interface [Raxx](https://github.com/crowdhailer/raxx).
+Why? because experiments.
 
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed as:
+## Topics I want to tackle:
 
-  1. Add `ace_raxx_cluster_example` to your list of dependencies in `mix.exs`:
+- node discovery
+- clustering
+- releases
 
-    ```elixir
-    def deps do
-      [{:ace_raxx_cluster_example, "~> 0.1.0"}]
-    end
-    ```
+## Status
 
-  2. Ensure `ace_raxx_cluster_example` is started before your application:
+The system looks up two nodes from the `sys.config` file.
+i.e. it doesn't do discovery
 
-    ```elixir
-    def application do
-      [applications: [:ace_raxx_cluster_example]]
-    end
-    ```
+Instructions for running are with mix.
+i.e. Releases are also outstanding.
 
+Current project is fixing Server Sent events in raxx so that the browser can be updated when nodes are added removed.
+
+## Usage
+
+- clone this repo.
+- fetch dependencies
+- start n1 and n2 nodes.
+
+```
+git clone git@github.com:CrowdHailer/ace-raxx-clustering-example.git
+cd ace-raxx-clustering-example
+mix deps.get
+PORT=8080 iex --name n1@127.0.0.1 --erl "-config sys.config" -S mix
+
+PORT=8081 iex --name n2@127.0.0.1 --erl "-config sys.config" -S mix
+```
+
+visit localhost:8080
