@@ -1,20 +1,29 @@
 defmodule AceRaxxClusterExample do
+  defmodule Router do
+    def handle_request(_, _) do
+      body = "Hello, World!"
+      Raxx.Response.ok(body)
+    end
+  end
+
   use Application
 
-  # See http://elixir-lang.org/docs/stable/elixir/Application.html
-  # for more information on OTP Applications
+  @raxx_app {__MODULE__, []}
+
   def start(_type, _args) do
     import Supervisor.Spec, warn: false
 
-    # Define workers and child supervisors to be supervised
     children = [
-      # Starts a worker by calling: AceRaxxClusterExample.Worker.start_link(arg1, arg2, arg3)
-      # worker(AceRaxxClusterExample.Worker, [arg1, arg2, arg3]),
+      worker(Ace.TCP, [{Raxx.Adapters.Ace.Handler, @raxx_app}, [port: 8080]])
     ]
 
-    # See http://elixir-lang.org/docs/stable/elixir/Supervisor.html
-    # for other strategies and supported options
-    opts = [strategy: :one_for_one, name: AceRaxxClusterExample.Supervisor]
+    opts = [strategy: :one_for_one, name: Baobab.Web.Supervisor]
     Supervisor.start_link(children, opts)
+  end
+
+  def handle_request(request, state) do
+    response = Router.handle_request(request, state)
+    headers = response.headers ++ [{"content-length", "#{:erlang.iolist_size(response.body)}"}]
+    %{response | headers: headers}
   end
 end
