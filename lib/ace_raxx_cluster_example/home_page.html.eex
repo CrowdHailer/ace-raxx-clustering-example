@@ -13,5 +13,30 @@
         </li>
       <% end %>
     </ul>
+    <script type="text/javascript">
+			function ready() {
+				if (!!window.EventSource) {
+					setupEventSource();
+				} else {
+					console.log("Sorry but your browser doesn't support the EventSource API");
+				}
+			}
+      $nodeList = document.getElementById("node-list");
+			function setupEventSource() {
+				var source = new EventSource('/updates');
+				source.addEventListener('nodes', function(event) {
+          var nodes = JSON.parse(event.data).reduce(function(total, node){
+            var line = "<li>" + node + "</li>"
+            return total + line
+          }, "")
+          $nodeList.innerHTML = nodes
+				}, false);
+				source.addEventListener('open', function(event) {
+          console.log(event)
+				}, false);
+			}
+
+      ready()
+		</script>
   </body>
 </html>

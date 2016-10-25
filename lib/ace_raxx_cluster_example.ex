@@ -3,9 +3,26 @@ defmodule AceRaxxClusterExample do
     require EEx
     EEx.function_from_file :def, :home_page, "lib/ace_raxx_cluster_example/home_page.html.eex", [:nodes]
 
-    def handle_request(_, _) do
+    def handle_request(%{path: []}, _) do
       {:ok, nodes} = AceRaxxClusterExample.Tracker.current
-      Raxx.Response.ok(home_page(nodes))
+      body = home_page(nodes)
+      Raxx.Response.ok(body, [{"content-length", "#{:erlang.iolist_size(body)}"}])
+    end
+
+    def handle_request(%{path: ["updates"]}, _) do
+      GenEvent.add_handler(AceRaxxClusterExample.Broadcast, {AceRaxxClusterExample.BroadcastHandler, make_ref}, self)
+      Raxx.ServerSentEvents.upgrade({__MODULE__, :noenv})
+    end
+
+    def handle_request(_, _) do
+      Raxx.Response.not_found("not found")
+    end
+
+    def handle_info({:nodes, nodes}, _) do
+      data = Enum.map(nodes, fn(n) -> n end) |> Enum.join("\", \"")
+      event = Raxx.ServerSentEvents.Event.new("[\"#{data}\"]", event: "nodes")
+      chunk = Raxx.ServerSentEvents.Event.to_chunk(event)
+      {:chunk, chunk, :nostate}
     end
   end
 
@@ -37,7 +54,7 @@ defmodule AceRaxxClusterExample do
     def handle_call({:hello, other}, _from, nodes) do
       :erlang.monitor_node(other, true)
       nodes = MapSet.put(nodes, other)
-      GenEvent.notify(AceRaxxClusterExample.Broadcast, {:nodes, nodes})
+      GenEvent.notify(AceRaxxClusterExample.Broadcast, {:nodes, MapSet.put(nodes, node())})
       {:reply, :ok, nodes}
     end
 
@@ -47,7 +64,7 @@ defmodule AceRaxxClusterExample do
 
     def handle_info({:nodedown, other}, nodes) do
       nodes = MapSet.delete(nodes, other)
-      GenEvent.notify(AceRaxxClusterExample.Broadcast, {:nodes, nodes})
+      GenEvent.notify(AceRaxxClusterExample.Broadcast, {:nodes, MapSet.put(nodes, node())})
       {:noreply, nodes}
     end
   end
@@ -56,7 +73,7 @@ defmodule AceRaxxClusterExample do
     use GenEvent
 
     def handle_event({:nodes, nodes}, connection) do
-      send(connection, nodes)
+      send(connection, {:nodes, nodes})
       {:ok, connection}
     end
   end
@@ -81,8 +98,6 @@ defmodule AceRaxxClusterExample do
   end
 
   def handle_request(request, state) do
-    response = Router.handle_request(request, state)
-    headers = response.headers ++ [{"content-length", "#{:erlang.iolist_size(response.body)}"}]
-    %{response | headers: headers}
+    Router.handle_request(request, state)
   end
 end

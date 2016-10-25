@@ -14,12 +14,13 @@ Why? because experiments.
 ## Status
 
 The system looks up two nodes from the `sys.config` file.
-i.e. it doesn't do discovery
+
+i.e. it doesn't do discovery (this is the next step)
 
 Instructions for running are with mix.
+
 i.e. Releases are also outstanding.
 
-Current project is fixing Server Sent events in raxx so that the browser can be updated when nodes are added removed.
 
 ## Usage
 
