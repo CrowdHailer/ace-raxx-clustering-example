@@ -6,10 +6,13 @@
   </head>
   <body>
     <h1>Ace Raxx cluster example</h1>
+    <h2>node: <%= node %></h2>
     <ul id="node-list">
       <%= for node <- nodes do %>
         <li>
-          <%= node %>
+          <a href="<%= link_href(node) %>">
+            <%= node %>
+          </a>
         </li>
       <% end %>
     </ul>
@@ -26,7 +29,8 @@
 				var source = new EventSource('/updates');
 				source.addEventListener('nodes', function(event) {
           var nodes = JSON.parse(event.data).reduce(function(total, node){
-            var line = "<li>" + node + "</li>"
+            ip = node.split("@")[1]
+            var line = "<li><a href=\"http://" + ip + ":8080\">" + node + "</a></li>"
             return total + line
           }, "")
           $nodeList.innerHTML = nodes

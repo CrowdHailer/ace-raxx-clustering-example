@@ -23,4 +23,9 @@ defmodule AceRaxxClusterExample.Router do
     chunk = Raxx.ServerSentEvents.Event.to_chunk(event)
     {:chunk, chunk, :nostate}
   end
+
+  defp link_href(node) do
+    [name, ip] =String.split("#{node}", "@")
+    "http://#{ip}:8080"
+  end
 end

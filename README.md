@@ -25,7 +25,7 @@ i.e. Releases are also outstanding.
 
 ## Usage
 
-**These examples all run in Vagrant, to see an example where everything runs on one node check [version 0.1.0]()**
+**These examples all run in Vagrant, to see an example where everything runs on one node check [version 0.1.0](https://github.com/CrowdHailer/ace-raxx-clustering-example/tree/0.1.0)**
 
 On host.
 - clone this repo.
@@ -50,3 +50,8 @@ iex --name example@10.10.10.2 --erl "-config sys.config -setcookie ace" -S mix
 ```
 
 visit [10.10.10.2:8080](10.10.10.2:8080)
+
+Start up prod2 and prod3, ensuring:
+
+- That their names match their ip's.
+- They all have the same cookie.
