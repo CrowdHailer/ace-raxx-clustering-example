@@ -17,8 +17,8 @@ defmodule AceRaxxClusterExample.Mixfile do
 
   defp deps do
     [
-      {:ace, "0.6.3"},
-      {:raxx, "0.4.1"}
+      {:ace, "0.7.0"},
+      {:raxx, "0.4.2"}
     ]
   end
 end

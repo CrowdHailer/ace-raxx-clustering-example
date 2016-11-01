@@ -1,2 +1,2 @@
-%{"ace": {:hex, :ace, "0.6.3", "85d8dd6be8c18fea1e061571154984815420ac01de73f7780d43517754180ae4", [:mix], []},
-  "raxx": {:hex, :raxx, "0.4.1", "cb399068c38060d7a418efc50883aa15231edbce80abbf20fd1ebf2572513ae8", [:mix], []}}
+%{"ace": {:hex, :ace, "0.7.0", "da8774c9da21dea09c87e825355657d6a431cce5dcbc17704f0c74153f519a59", [:mix], []},
+  "raxx": {:hex, :raxx, "0.4.2", "5afeae1a0eb0ca562cdbd6540242c3bec0e2e576676b0b2202d61ef083c0b95e", [:mix], []}}
