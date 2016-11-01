@@ -13,7 +13,8 @@ Why? because experiments.
 
 ## Status
 
-The system looks up two nodes from the `sys.config` file.
+The system looks up nodes from the `sys.config` file.
+This means the core network is static although nodes that discover the core network will become part of the cluster.
 
 i.e. it doesn't do discovery (this is the next step)
 
@@ -24,17 +25,28 @@ i.e. Releases are also outstanding.
 
 ## Usage
 
+**These examples all run in Vagrant, to see an example where everything runs on one node check [version 0.1.0]()**
+
+On host.
 - clone this repo.
+- start up nodes with vagrant.
+
+On guests.
 - fetch dependencies
-- start n1 and n2 nodes.
+- start program with common secret and correct name.
 
 ```
 git clone git@github.com:CrowdHailer/ace-raxx-clustering-example.git
 cd ace-raxx-clustering-example
-mix deps.get
-PORT=8080 iex --name n1@127.0.0.1 --erl "-config sys.config" -S mix
+vagrant box update
 
-PORT=8081 iex --name n2@127.0.0.1 --erl "-config sys.config" -S mix
+vagrant up
+
+vagrant ssh prod1
+...
+cd /vagrant
+mix deps.get
+iex --name example@10.10.10.2 --erl "-config sys.config -setcookie ace" -S mix
 ```
 
-visit localhost:8080
+visit [10.10.10.2:8080](10.10.10.2:8080)

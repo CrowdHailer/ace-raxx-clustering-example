@@ -6,7 +6,7 @@ defmodule AceRaxxClusterExample do
   def start(_type, _args) do
     import Supervisor.Spec, warn: false
 
-    port = :erlang.binary_to_integer(System.get_env("PORT")) || 8080
+    port = :erlang.binary_to_integer(System.get_env("PORT") || "8080")
 
     children = [
       worker(__MODULE__.Broadcast, [[name: __MODULE__.Broadcast]]),

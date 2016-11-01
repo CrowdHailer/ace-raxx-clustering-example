@@ -19,21 +19,28 @@ Vagrant.configure("2") do |config|
   end
 
   config.vm.define "prod1" do |prod|
+    prod.vm.synced_folder ".", "/vagrant"
     prod.vm.hostname = "prod1"
 
-    prod.vm.network "private_network", type: "dhcp"
+    prod.vm.network "private_network", ip: "10.10.10.2"
+
+    prod.vm.provision "shell", path: "./provision.sh"
   end
 
   config.vm.define "prod2" do |prod|
     prod.vm.hostname = "prod2"
 
-    prod.vm.network "private_network", type: "dhcp"
+    prod.vm.network "private_network", ip: "10.10.10.3"
+
+    prod.vm.provision "shell", path: "./provision.sh"
   end
 
   config.vm.define "prod3" do |prod|
     prod.vm.hostname = "prod3"
 
-    prod.vm.network "private_network", type: "dhcp"
+    prod.vm.network "private_network", ip: "10.10.10.4"
+
+    prod.vm.provision "shell", path: "./provision.sh"
   end
 
   # This setting is needed so `:observer.start` can be run on guest nodes.
