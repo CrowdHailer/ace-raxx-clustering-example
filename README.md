@@ -13,10 +13,20 @@ Why? because experiments.
 
 ## Status
 
-The system looks up nodes from the `sys.config` file.
-This means the core network is static although nodes that discover the core network will become part of the cluster.
+Node discovery is done by UDP broadcasts to the ip `10.10.10.255`.
+This mechanism will discover all nodes with the ip address `10.10.10.*`.
+Assuming:
 
-i.e. it doesn't do discovery (this is the next step)
+- That the node is named `example@10.10.10.*`
+- That the nodes share the same secret.
+- The nodes name matches the ip address of the virtual machine.
+
+#### Notes
+- To broadcast a udp socket must have been opened with broadcast set to true.
+- Vagrant by default uses a network mask of `255.255.255.0` [ref](https://friendsofvagrant.github.io/v1/docs/host_only_networking.html). "This means that as long as the first three parts of the IP are equivalent, VMs will join the same network."
+- I don't really understand what the difference between multicast and broadcast is.
+  There might be a reason to use multicast as in the case with [libcluster](https://github.com/bitwalker/libcluster/blob/master/lib/strategy/gossip.ex).
+  Or this zeroconf [example](http://stackoverflow.com/questions/78826/erlang-multicast).
 
 Instructions for running are with mix.
 
@@ -46,7 +56,7 @@ vagrant ssh prod1
 ...
 cd /vagrant
 mix deps.get
-iex --name example@10.10.10.2 --erl "-config sys.config -setcookie ace" -S mix
+iex --name example@10.10.10.2 --erl "-setcookie ace" -S mix
 ```
 
 visit [10.10.10.2:8080](10.10.10.2:8080)
